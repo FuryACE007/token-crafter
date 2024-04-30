@@ -18,7 +18,7 @@ const FileUpload = () => {
           />
         </div>
         <div className="relative">
-          <span className=" text-sm font-semibold relative text-blue-900 group-hover:text-blue-500">
+          <span className="` text-sm font-semibold relative text-blue-900 group-hover:text-blue-500">
             Upload image
           </span>
           <span className="mt-0.5 block text-sm text-gray-500">Max 2 MB</span>
