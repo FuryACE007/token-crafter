@@ -1,8 +1,12 @@
 "use client";
 
 import CreateTokenForm from "@/components/form/CreateTokenForm";
+import { useUmi } from "@/useUmi";
+import { generateSigner, signerIdentity } from "@metaplex-foundation/umi";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { createSignerFromWalletAdapter } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import Head from "next/head";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 export default function CreateToken() {
@@ -19,6 +23,11 @@ export default function CreateToken() {
       </main>
     );
   }
+
+  const umi = useUmi();
+  const [mint, setMint] = useState(generateSigner(umi));
+  umi.use(signerIdentity(createSignerFromWalletAdapter(wallet)));
+
   return (
     <>
       <Head>
@@ -29,7 +38,7 @@ export default function CreateToken() {
       </Head>
       <main className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative flex items-center justify-center">
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-        <CreateTokenForm />
+        <CreateTokenForm umi={umi} />
         <Toaster />
       </main>
     </>
