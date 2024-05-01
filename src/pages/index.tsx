@@ -33,7 +33,7 @@ export default function Home() {
             Zero Code <br />
             Token Minting Platform
           </p>
-          <WalletMultiButton />
+          {/* <WalletMultiButton /> */}
         </div>
       </main>
     </>
