@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 export function useUmi(): Umi {
   const wallet = useWallet();
-  const rpcEndpoint = process.env.REACT_APP_RPC_ENDPOINT;
+  const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_ENDPOINT;
 
   if (!rpcEndpoint) {
     throw new Error("RPC endpoint is not defined. ");
