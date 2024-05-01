@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="layout">
       <header className="flex justify-between items-center p-4 bg-black text-white">
-        <div className="flex items-center">
+        <div className="flex items-center text-xl font-extrabold uppercase">
           <span className="text-white mr-2">Token</span>
           <span className="text-[#CD1818]">Craft</span>
         </div>

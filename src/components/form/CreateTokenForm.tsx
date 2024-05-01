@@ -1,16 +1,11 @@
 import { cn } from "@/utils/cn";
-import type { Umi } from "@metaplex-foundation/umi";
 import React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import FileUpload from "./FileUpload";
 
-interface CreateTokenFormProps {
-  umi: Umi;
-}
-
-const CreateTokenForm: React.FC<CreateTokenFormProps> = ({ umi }) => {
+const CreateTokenForm = () => {
   const createTokenHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     toast.success("Token Created!", {
