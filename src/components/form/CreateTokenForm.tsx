@@ -1,17 +1,45 @@
 import { cn } from "@/utils/cn";
-import React from "react";
+import type { Umi } from "@metaplex-foundation/umi";
+import React, { useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import FileUpload from "./FileUpload";
+import { createTokenService } from "@/utils/token-operations";
 
-const CreateTokenForm = () => {
+interface CreateTokenFormProps {
+  umi: Umi;
+}
+
+const CreateTokenForm: React.FC<CreateTokenFormProps> = ({ umi }) => {
+  const tokenNameRef = useRef<HTMLInputElement | null>(null);
+  const tokenSymbolRef = useRef<HTMLInputElement | null>(null);
+  const tokenDescriptionRef = useRef<HTMLInputElement | null>(null);
+  const tokenImageRef = useRef<HTMLInputElement | null>(null);
+
   const createTokenHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.success("Token Created!", {
-      icon: "🚀🚀",
-      position: "top-center",
-    });
+
+    const tokenName = tokenNameRef.current?.value || "";
+    const tokenSymbol = tokenSymbolRef.current?.value || "";
+    const tokenDescription = tokenDescriptionRef.current?.value || "";
+    const tokenImage = tokenImageRef.current?.files?.[0];
+
+    if (tokenImage) {
+      createTokenService(
+        umi,
+        tokenName,
+        tokenSymbol,
+        tokenDescription,
+        tokenImage
+      );
+
+      // toast.success("Token Created!", {
+      //   icon: "🚀🚀",
+      //   position: "top-center",
+      // });
+    } else {
+      toast.error("Token Image Missing!");
+    }
   };
 
   return (
@@ -21,10 +49,6 @@ const CreateTokenForm = () => {
           Craft<span className=" text-[#CD1818] mx-1">Token 🔨</span>
         </span>
       </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Launch and distribute your tokens on Solana without writing a single
-        line of code !
-      </p>
       <form className="my-8" onSubmit={createTokenHandler}>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
@@ -33,12 +57,19 @@ const CreateTokenForm = () => {
               id="tokenName"
               placeholder="TokenCrafters"
               type="text"
+              ref={tokenNameRef}
               required
             />
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="tokenSymbol">Token Symbol</Label>
-            <Input id="tokenSymbol" placeholder="TCX" type="text" required />
+            <Input
+              id="tokenSymbol"
+              placeholder="TCX"
+              type="text"
+              ref={tokenSymbolRef}
+              required
+            />
           </LabelInputContainer>
         </div>
         <LabelInputContainer>
@@ -47,6 +78,7 @@ const CreateTokenForm = () => {
             id="tokenDescription"
             placeholder="Some info about the token ( optional )"
             type="text"
+            ref={tokenDescriptionRef}
           />
         </LabelInputContainer>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 my-4">
@@ -54,7 +86,38 @@ const CreateTokenForm = () => {
             <Label className="mb-2" htmlFor="tokenImage">
               Token Image
             </Label>
-            <FileUpload />
+            <div className="relative">
+              <label
+                title="Click to upload"
+                htmlFor="button2"
+                className="cursor-pointer flex items-center gap-4 px-3 py-2 before:border-gray-600 group before:bg-transparent  before:absolute before:inset-0 before:rounded-3xl before:border before:border-dashed before:transition-transform before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+              >
+                <div className=" w-max relative">
+                  <img
+                    className="w-10"
+                    src="https://www.svgrepo.com/show/485545/upload-cicle.svg"
+                    alt="file upload icon"
+                    width="512"
+                    height="512"
+                  />
+                </div>
+                <div className="relative">
+                  <span className="text-sm font-semibold relative text-blue-900 group-hover:text-blue-500">
+                    Upload image
+                  </span>
+                  <span className="mt-0.5 block text-sm text-gray-500">
+                    Max 2 MB
+                  </span>
+                </div>
+              </label>
+              <input
+                hidden
+                type="file"
+                name="button2"
+                id="button2"
+                ref={tokenImageRef}
+              />
+            </div>
           </LabelInputContainer>
         </div>
 

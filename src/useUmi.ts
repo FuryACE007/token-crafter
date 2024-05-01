@@ -3,11 +3,13 @@
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import type { Umi } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useMemo } from "react";
 
 export function useUmi(): Umi {
-  //   const wallet = useWallet();
+  const wallet = useWallet();
   const rpcEndpoint = process.env.NEXT_PUBLIC_RPC_ENDPOINT;
 
   if (!rpcEndpoint) {
@@ -15,18 +17,15 @@ export function useUmi(): Umi {
   }
 
   const umi = useMemo(() => {
-    return (
-      createUmi(rpcEndpoint)
-        //   .use(walletAdapterIdentity(wallet))
-        .use(mplTokenMetadata())
-        .use(
-          irysUploader({
-            address: "https://devnet.irys.xyz",
-          })
-        )
-    );
-    //   }, [wallet]);
-  }, [rpcEndpoint]);
+    return createUmi(rpcEndpoint)
+      // .use(walletAdapterIdentity(wallet))
+      .use(mplTokenMetadata())
+      .use(
+        irysUploader({
+          address: "https://devnet.irys.xyz",
+        })
+      );
+  }, [wallet]);
 
   if (!umi) {
     throw new Error(
