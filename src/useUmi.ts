@@ -18,7 +18,7 @@ export function useUmi(): Umi {
 
   const umi = useMemo(() => {
     return createUmi(rpcEndpoint)
-      .use(walletAdapterIdentity(wallet))
+      // .use(walletAdapterIdentity(wallet))
       .use(mplTokenMetadata())
       .use(
         irysUploader({

@@ -1,9 +1,6 @@
 import { useRouter } from "next/router";
 import { useWallet } from "@solana/wallet-adapter-react";
-import CreateTokenForm from "@/components/form/CreateTokenForm";
 import Head from "next/head";
-import { Toaster } from "react-hot-toast";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useEffect } from "react";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
