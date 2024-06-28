@@ -1,10 +1,17 @@
-import { createFungible } from "@metaplex-foundation/mpl-token-metadata";
+import {
+  createFungible,
+  fetchAllDigitalAssetByOwner,
+} from "@metaplex-foundation/mpl-token-metadata";
 import {
   Umi,
   createGenericFileFromBrowserFile,
   generateSigner,
   percentAmount,
+  publicKey,
 } from "@metaplex-foundation/umi";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
+import { Connection, PublicKey } from "@solana/web3.js";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 export const createTokenService = async (
@@ -52,5 +59,51 @@ export const createTokenService = async (
 };
 export const checkSolBalance = async () => {};
 export const mintTokenHandler = async () => {};
-export const getTokensOwned = async () => {};
+
+export const getTokensOwned = async (walletAddress: string, umi: Umi) => {
+  const connection = new Connection(
+    process.env.NEXT_PUBLIC_RPC_ENDPOINT!,
+    "confirmed"
+  );
+  const assets = await fetchAllDigitalAssetByOwner(
+    umi,
+    publicKey(walletAddress)
+  );
+  if (assets.length < 0) throw new Error("No assets found");
+
+  const tokenDataPromises = assets.map(async (asset) => {
+    const pub = new PublicKey(asset.publicKey);
+
+    const tokenAccount = await getAssociatedTokenAddress(
+      pub,
+      new PublicKey(walletAddress)
+    );
+
+    let balance = await connection.getTokenAccountBalance(tokenAccount);
+    let balanceValue = 0;
+    if (balance.value.uiAmount) balanceValue = balance.value.uiAmount;
+
+    try {
+      // const metadataResponse = await axios.get(asset.metadata.uri);
+      // const metadata = metadataResponse.data;
+
+      const result = {
+        name: asset.metadata.name,
+        symbol: asset.metadata.symbol,
+        // metadata,
+        balance: balanceValue,
+        mintAddress: asset.mint.publicKey,
+      };
+
+      return result;
+    } catch (error) {
+      throw new Error(
+        typeof error === "string" ? error : "An unknown error occurred"
+      );
+    }
+  });
+  const tokenData = await Promise.all(tokenDataPromises);
+
+  return JSON.stringify(tokenData);
+};
 export const sendTokensHandler = async () => {};

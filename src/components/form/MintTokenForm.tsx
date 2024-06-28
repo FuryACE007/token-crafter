@@ -5,18 +5,21 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import FileUpload from "./FileUpload";
 import { Umi } from "@metaplex-foundation/umi";
+import { getTokensOwned } from "@/utils/token-operations";
 
 interface MintTokenFormProps {
   umi: Umi;
 }
 
 const MintTokenForm: React.FC<MintTokenFormProps> = ({ umi }) => {
-  const mintTokenHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const mintTokenHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     toast.success("Token Minted!", {
       icon: "🚀🚀",
       position: "top-center",
     });
+    const assets = await getTokensOwned(umi.identity.publicKey, umi);
+    console.log(assets);
   };
 
   return (
@@ -32,7 +35,7 @@ const MintTokenForm: React.FC<MintTokenFormProps> = ({ umi }) => {
             <Label htmlFor="tokenMint">Token Mint</Label>
             <Input
               id="tokenMint"
-              placeholder="TokenCrafters"
+              placeholder="Token Mint"
               type="text"
               required
             />
